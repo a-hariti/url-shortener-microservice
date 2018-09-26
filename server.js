@@ -7,20 +7,15 @@ mongoose.Promise = Promise;
 const port = process.env.PORT || 3000;
 
 const urlShortener = require("./url-shortener");
-mongoose.connect(
-  process.env.MONGO_URI,
-  err =>
-    console.log(
-      err
-        ? `error connecting to mongodb: ${err}`
-        : "connected to mongodb succssessfully"
-    )
-);
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(_ => console.log("connected to mongodb succssessfully"))
+  .catch(err => console.log(`error connecting to mongodb: ${err}`));
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
+app.use("/api/*", cors());
 
 app.use("/public", express.static(process.cwd() + "/public"));
 app.get("/", function(req, res) {
